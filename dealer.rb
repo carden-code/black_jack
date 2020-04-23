@@ -1,7 +1,8 @@
 #
 class Dealer
   def initialize
-    @name = dealer
+    @name = 'Dealer'
     @money = 100
+    @cards = []
   end
 end
