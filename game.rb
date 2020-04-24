@@ -40,6 +40,14 @@ class Game
     @args << gets.chomp
   end
 
+  def mesage_no_money
+    puts 'Ваши деньги закончились. Вы проиграли!'
+  end
+
+  def message_win
+    puts 'Поздравляем! Вы выиграли! У Диллера нет денег.'
+  end
+
   # Метод new_game добавляет пользователя.
   def new_game
     return unless @bank.zero?
@@ -52,8 +60,14 @@ class Game
       @user[0].cards.clear && @user[0].sum_cards = 0
       @dealer[0].cards.clear && @dealer[0].sum_cards = 0
     end
-    deal_cards
-    make_a_bet
+    if @user[0].money.positive? && @dealer[0].money.positive?
+      deal_cards
+      make_a_bet
+    elsif @user[0].money.zero?
+      mesage_no_money
+    elsif @dealer[0].money.zero?
+      message_win
+    end
   end
 
   def deal_cards
