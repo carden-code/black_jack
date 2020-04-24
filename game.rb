@@ -1,7 +1,6 @@
-require 'pry'
 #
 class Game
-  HASH = { '1' => :add_user, '2' => :add_card_dealer,
+  HASH = { '1' => :new_game, '2' => :add_card_dealer,
            '3' => :add_card_user, '4' => :open_cards }.freeze
 
   attr_reader :user, :dealer, :bet, :bank
@@ -41,21 +40,20 @@ class Game
     @args << gets.chomp
   end
 
-  # Метод add_user добавляет пользователя.
-  def add_user
+  # Метод new_game добавляет пользователя.
+  def new_game
+    return unless @bank.zero?
     if @user.size.zero?
       message = ['Введите ваше имя:']
       name = data_input(message).first
       @user << User.new(name)
       @dealer << Dealer.new
-      deal_cards
-      make_a_bet
     else
-      user.last.cards.clear && user.last.sum_cards = 0
-      dealer.last.cards.clear && dealer.last.sum_cards = 0
-      deal_cards
-      make_a_bet
+      @user[0].cards.clear && @user[0].sum_cards = 0
+      @dealer[0].cards.clear && @dealer[0].sum_cards = 0
     end
+    deal_cards
+    make_a_bet
   end
 
   def deal_cards
@@ -71,8 +69,10 @@ class Game
                '2♠' => 2, '2♦' => 2 }.sort.sort_by! { rand }
     @user[0].cards << @cards.pop(2)
     @dealer[0].cards << @cards.pop(2)
-    @user[0].cards_sum = 12 if @user[0].cards_sum == 22
-    @dealer[0].cards_sum = 12 if @dealer[0].cards_sum == 22
+    @user[0].cards_sum
+    @user[0].sum_cards = 12 if @user[0].cards_sum == 22
+    @dealer[0].cards_sum
+    @dealer[0].sum_cards = 12 if @dealer[0].cards_sum == 22
   end
 
   def make_a_bet
@@ -83,26 +83,29 @@ class Game
   end
 
   def add_card_user
-    return if user.size.zero?
-    return if @user[0].cards[0].size < 2
-    @user[0].cards[0] << @cards.pop
-    @user[0].sum_cards += @user[0].cards[0][2][1]
+    return if @bank.zero?
+    return if @user[0].cards[0].size == 3
+
+    @user[0].cards[0] << @cards.pop if @user[0].cards[0].size < 3
+    if @user[0].cards[0].last.last == 11 && @user[0].sum_cards + 11 > 21
+      @user[0].sum_cards += 1
+    elsif @user[0].cards[0].size > 2
+      @user[0].sum_cards += @user[0].cards[0].last.last
+    end
     open_cards if @user[0].sum_cards > 21
   end
 
   def add_card_dealer
-    return if dealer.size.zero?
-    return if @dealer[0].cards[0].size < 2
-    @dealer[0].cards[0] << @cards.pop if @dealer[0].cards_sum < 17
-    @dealer[0].sum_cards += @dealer[0].cards[0][2][1]
-  end
+    return if @bank.zero?
+    return if @dealer[0].cards[0].size == 3
 
-  def bust
-    puts 'Перебор!'
-  end
-
-  def message_new_round
-    puts "Если хотите продолжить нажмите '1', если нет нажмите '0'"
+    @dealer[0].cards[0] << @cards.pop if @dealer[0].sum_cards < 17
+    if @dealer[0].cards[0].last.last == 11 && @dealer[0].sum_cards + 11 > 21
+      @dealer[0].sum_cards += 1
+    elsif @dealer[0].cards[0].size > 2
+      @dealer[0].sum_cards += @dealer[0].cards[0].last.last
+    end
+    open_cards if @dealer[0].cards[0].size == 3 || @dealer[0].sum_cards >= 17
   end
 
   def open_cards
@@ -111,6 +114,11 @@ class Game
       @user[0].money += @bank
       @bank = 0
       message_user_win
+      message_new_round
+    elsif @user[0].sum_cards > 21
+      @dealer[0].money += @bank
+      @bank = 0
+      message_dealer_win
       message_new_round
     elsif @dealer[0].sum_cards > 21
       @user[0].money += @bank
@@ -128,26 +136,28 @@ class Game
       @bank = 0
       message_dealer_win
       message_new_round
-    elsif @user[0].sum_cards > 21
-      @dealer[0].money += @bank
-      @bank = 0
-      message_dealer_win
-      message_new_round
     end
   end
 
+  def message_new_round
+    puts "Если хотите продолжить нажмите '1', если нет нажмите '0'"
+  end
+
   def message_dealer_win
-    puts "Диллер победил. #{@dealer[0].sum_cards}"
+    puts "Диллер победил.\n\n"
+    puts "Сумма очков Диллера: #{@dealer[0].sum_cards}\n\n"
+    puts "Сумма очков #{@user[0].name}: #{@user[0].sum_cards}\n\n"
   end
 
   def message_user_win
-    puts "Сумма очков #{@user[0].name}: #{@user[0].sum_cards}\n\n"
     puts "Игрок #{@user[0].name} - Победил!"
+    puts "Сумма очков #{@user[0].name}: #{@user[0].sum_cards}\n\n"
+    puts "Сумма очков Диллера: #{@dealer[0].sum_cards}\n\n"
   end
 
   def message_draw
+    puts 'Ничья!'
     puts "Сумма очков #{@user[0].name}: #{@user[0].sum_cards}\n\n"
     puts "Сумма очков Диллера: #{@dealer[0].sum_cards}\n\n"
-    puts 'Ничья!'
   end
 end
