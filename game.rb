@@ -4,10 +4,9 @@ class Game
   HASH = { '1' => :add_user, '2' => :add_card_dealer,
            '3' => :add_card_user, '4' => :open_cards }.freeze
 
-  attr_reader :name, :user, :cards, :dealer, :bet, :bank
+  attr_reader :user, :dealer, :bet, :bank
 
   def initialize
-    @name = 'Black_Jack'
     @user = []
     @dealer = []
     @bank = 0
@@ -27,7 +26,7 @@ class Game
   end
 
   def message_re_enter
-    puts 'Повторите ввод!'
+    puts 'Повторите ввод.'
   end
 
   def selected(menu_item)
@@ -72,8 +71,8 @@ class Game
                '2♠' => 2, '2♦' => 2 }.sort.sort_by! { rand }
     @user[0].cards << @cards.pop(2)
     @dealer[0].cards << @cards.pop(2)
-    @user[0].cards_sum
-    @dealer[0].cards_sum
+    @user[0].cards_sum = 12 if @user[0].cards_sum == 22
+    @dealer[0].cards_sum = 12 if @dealer[0].cards_sum == 22
   end
 
   def make_a_bet
@@ -84,16 +83,17 @@ class Game
   end
 
   def add_card_user
+    return if user.size.zero?
     return if @user[0].cards[0].size < 2
     @user[0].cards[0] << @cards.pop
-    #binding.pry
     @user[0].sum_cards += @user[0].cards[0][2][1]
+    open_cards if @user[0].sum_cards > 21
   end
 
   def add_card_dealer
+    return if dealer.size.zero?
     return if @dealer[0].cards[0].size < 2
     @dealer[0].cards[0] << @cards.pop if @dealer[0].cards_sum < 17
-    #binding.pry
     @dealer[0].sum_cards += @dealer[0].cards[0][2][1]
   end
 
@@ -106,40 +106,48 @@ class Game
   end
 
   def open_cards
-    add_card_dealer if dealer.last.cards.size < 3 && dealer.last.sum_cards < 17
-    if user.last.sum_cards > dealer.last.sum_cards && user.last.sum_cards <= 21
-      user.last.money += @bank
+    add_card_dealer if @dealer[0].cards.size < 3 && @dealer[0].sum_cards < 17
+    if @user[0].sum_cards > @dealer[0].sum_cards && @user[0].sum_cards <= 21
+      @user[0].money += @bank
       @bank = 0
-      puts "Сумма очков #{user.last.name}: #{user.last.sum_cards}\n\n"
-      puts "Игрок #{user.last.name} - Победил!"
+      message_user_win
       message_new_round
-    elsif dealer.last.sum_cards > 21
-      user.last.money += @bank
+    elsif @dealer[0].sum_cards > 21
+      @user[0].money += @bank
       @bank = 0
-      puts "Сумма очков #{user.last.name}: #{user.last.sum_cards}\n\n"
-      puts "Игрок #{user.last.name} - Победил!"
+      message_user_win
       message_new_round
-    elsif user.last.sum_cards == dealer.last.sum_cards
-      user.last.money += @bank / 2
-      dealer.last.money += @bank / 2
+    elsif @user[0].sum_cards == @dealer[0].sum_cards
+      @user[0].money += @bank / 2
+      @dealer[0].money += @bank / 2
       @bank = 0
-      puts "Сумма очков #{user.last.name}: #{user.last.sum_cards}\n\n"
-      puts "Сумма очков Диллера: #{dealer.last.sum_cards}\n\n"
-      puts "Ничья!"
+      message_draw
       message_new_round
-    elsif user.last.sum_cards < dealer.last.sum_cards && dealer.last.sum_cards <= 21
-      dealer.last.money += @bank
+    elsif @user[0].sum_cards < @dealer[0].sum_cards && @dealer[0].sum_cards <= 21
+      @dealer[0].money += @bank
       @bank = 0
-      puts "Диллер победил. #{dealer.last.sum_cards}"
+      message_dealer_win
       message_new_round
-    elsif user.last.sum_cards > 21
-      dealer.last.money += @bank
+    elsif @user[0].sum_cards > 21
+      @dealer[0].money += @bank
       @bank = 0
-      puts "Диллер победил. #{dealer.last.sum_cards}"
+      message_dealer_win
       message_new_round
     end
   end
 
+  def message_dealer_win
+    puts "Диллер победил. #{@dealer[0].sum_cards}"
+  end
 
+  def message_user_win
+    puts "Сумма очков #{@user[0].name}: #{@user[0].sum_cards}\n\n"
+    puts "Игрок #{@user[0].name} - Победил!"
+  end
 
+  def message_draw
+    puts "Сумма очков #{@user[0].name}: #{@user[0].sum_cards}\n\n"
+    puts "Сумма очков Диллера: #{@dealer[0].sum_cards}\n\n"
+    puts 'Ничья!'
+  end
 end
