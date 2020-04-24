@@ -12,9 +12,7 @@ puts NEWLINE
 # Запуск меню (Цикл). С запросом ввода нужного пользователю пункта
 # и передаёт результат в виде параметра методу selected.
 loop do
-  puts "user: #{game.user}\n\n"
-  puts "dealer: #{game.dealer}\n\n"
-  puts "bank: #{game.bank.sum}\n\n"
+  puts "bank: #{game.bank}\n\n"
   puts "bet: #{game.bet}\n\n"
   puts NEWLINE
   game.menu_items
@@ -24,8 +22,16 @@ loop do
   break unless menu_item != '0'
 
   game.selected(menu_item)
-  puts "Ваши карты: #{game.user.first.cards[0]}\n\n"
-  puts "Сумма очков: #{game.user.first.cards_sum}\n\n"
-  puts "Карты Диллера: [[**][**]]"
-  puts "Сумма очков: **"
+
+  puts "Ваши деньги: #{game.user.last.money}\n\n"
+  puts "Ваши карты: #{game.user.last.cards[0]}\n\n"
+  puts "Сумма очков: #{game.user.last.sum_cards}\n\n"
+
+  if game.bank != 0
+    puts "Карты Диллера: [[**][**]]\n\n"
+    puts "Сумма очков: **\n\n"
+  else
+    puts "Карты Диллера: #{game.dealer.last.cards[0]}\n\n"
+    puts "Сумма очков: #{game.dealer.last.sum_cards}\n\n"
+  end
 end
