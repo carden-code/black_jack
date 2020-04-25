@@ -25,7 +25,7 @@ class Game
   end
 
   def message_re_enter
-    puts 'Повторите ввод.'
+    puts "Повторите ввод.\n\n"
   end
 
   def selected(menu_item)
@@ -41,11 +41,11 @@ class Game
   end
 
   def mesage_no_money
-    puts 'Ваши деньги закончились. Вы проиграли!'
+    puts "Ваши деньги закончились. Вы проиграли!\n\n"
   end
 
   def message_win
-    puts 'Поздравляем! Вы выиграли! У Диллера нет денег.'
+    puts "Поздравляем! Вы выиграли! У Диллера нет денег.\n\n"
   end
 
   # Метод new_game добавляет пользователя.
@@ -154,7 +154,7 @@ class Game
   end
 
   def message_new_round
-    puts "Если хотите продолжить нажмите '1', если нет нажмите '0'"
+    puts "Если хотите продолжить нажмите: '1', если нет нажмите: '0'\n\n"
   end
 
   def message_dealer_win
@@ -164,13 +164,13 @@ class Game
   end
 
   def message_user_win
-    puts "Игрок #{@user[0].name} - Победил!"
+    puts "Игрок #{@user[0].name} - Победил!\n\n"
     puts "Сумма очков #{@user[0].name}: #{@user[0].sum_cards}\n\n"
     puts "Сумма очков Диллера: #{@dealer[0].sum_cards}\n\n"
   end
 
   def message_draw
-    puts 'Ничья!'
+    puts "Ничья!\n\n"
     puts "Сумма очков #{@user[0].name}: #{@user[0].sum_cards}\n\n"
     puts "Сумма очков Диллера: #{@dealer[0].sum_cards}\n\n"
   end
