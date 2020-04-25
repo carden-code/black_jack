@@ -134,7 +134,7 @@ class Game
       @user[0].sum_cards += @user[0].cards[0].last.last
     end
 
-    open_cards if @user[0].sum_cards > 21
+    open_cards if @user[0].sum_cards >= 21
   end
 
   # Метод add_card_dealer добавляет дополнительную карту диллеру.
@@ -144,16 +144,18 @@ class Game
     return if @dealer[0].cards[0].size == 3
 
     @dealer[0].cards[0] << @cards.pop if @dealer[0].sum_cards < 17 &&
-                                         @user[0].sum_cards > @dealer[0].sum_cards &&
+                                         # @user[0].sum_cards > @dealer[0].sum_cards &&
                                          @user[0].sum_cards <= 21
 
-    if @dealer[0].cards[0].last.last == 11 && @dealer[0].sum_cards + 11 > 21
+    if @dealer[0].cards[0].size == 3 && @dealer[0].cards[0].last.last == 11 && @dealer[0].sum_cards + 11 > 21
       @dealer[0].sum_cards += 1
     elsif @dealer[0].cards[0].size > 2
       @dealer[0].sum_cards += @dealer[0].cards[0].last.last
     end
 
-    open_cards if @dealer[0].cards[0].size == 3 || @dealer[0].sum_cards >= 17
+    open_cards if @dealer[0].cards[0].size == 3 ||
+                  @dealer[0].sum_cards >= 17 ||
+                  @user[0].sum_cards > @dealer[0].sum_cards
   end
 
   # Метод open_cards производит подсчёт очков и выявляет победителя.
