@@ -22,10 +22,11 @@ loop do
   break unless menu_item != '0'
 
   game.selected(menu_item)
-
+  puts BORDERLINE
   puts "Ваши деньги: #{game.user.last.money}\n\n"
   puts "Ваши карты: #{game.user.last.cards[0]}\n\n"
   puts "Сумма очков: #{game.user.last.sum_cards}\n\n"
+  puts BORDERLINE
 
   if game.bank != 0
     puts "Карты Диллера: [[**][**]]\n\n"
@@ -34,4 +35,5 @@ loop do
     puts "Карты Диллера: #{game.dealer.last.cards[0]}\n\n"
     puts "Сумма очков: #{game.dealer.last.sum_cards}\n\n"
   end
+  puts BORDERLINE
 end
