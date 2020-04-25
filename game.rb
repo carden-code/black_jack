@@ -12,6 +12,7 @@ class Game
     @bet = 10
   end
 
+  # Метод menu_items выводит пользовательское меню.
   def menu_items
     messages = ['Выберите действие, введя номер из списка: ',
                 BORDERLINE,
@@ -24,10 +25,13 @@ class Game
     messages.each { |item| puts item }
   end
 
+  # Метод message_re_enter выводит сообщение.
   def message_re_enter
     puts "Повторите ввод.\n\n"
   end
 
+  # Метод selected принимает параметр из пользовательского ввода
+  # и исполняет соответствующий метод.
   def selected(menu_item)
     send HASH[menu_item]
   rescue TypeError
