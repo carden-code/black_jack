@@ -38,21 +38,26 @@ class Game
     message_re_enter
   end
 
+  # Метод data_input принимает параметр печатает его
+  # и запрашивает ввод пользователя, результат сохранят в @args.
   def data_input(message)
     @args = []
     message.each { |mess| puts mess }
     @args << gets.chomp
   end
 
-  def mesage_no_money
+  # Метод message_no_money выводит сообщение.
+  def message_no_money
     puts "Ваши деньги закончились. Вы проиграли!\n\n"
   end
 
+  # Метод message_win выводит сообщение.
   def message_win
     puts "Поздравляем! Вы выиграли! У Диллера нет денег.\n\n"
   end
 
-  # Метод new_game добавляет пользователя.
+  # Метод new_game добавляет поользователя и диллера в игру, раздаёт им карты
+  # и считает суммы очков.
   def new_game
     return unless @bank.zero?
     if @user.size.zero?
@@ -74,6 +79,7 @@ class Game
     end
   end
 
+  # Метод deal_cards перемешивает и раздаёт карты диллеру и пользователю.
   def deal_cards
     @cards = { 'A♣' => 11, 'A♥' => 11, 'A♠' => 11, 'A♦' => 11, 'K♣' => 10,
                'K♥' => 10, 'K♠' => 10, 'K♦' => 10, 'D♣' => 10, 'D♥' => 10,
@@ -93,6 +99,8 @@ class Game
     @dealer[0].sum_cards = 12 if @dealer[0].cards_sum == 22
   end
 
+  # Метод make_a_bet делает ставку в банк,
+  # вычитывая значение @bat из @money у диллера и пользователя.
   def make_a_bet
     @user[0].money -= @bet
     @bank += @bet
@@ -100,6 +108,7 @@ class Game
     @bank += @bet
   end
 
+  # Метод add_card_user добавляет дополнительную карту пользователю.
   def add_card_user
     return if @bank.zero?
     return if @user[0].cards[0].size == 3
@@ -113,6 +122,7 @@ class Game
     open_cards if @user[0].sum_cards > 21
   end
 
+  # Метод add_card_dealer добавляет дополнительную карту диллеру.
   def add_card_dealer
     return if @bank.zero?
     return if @dealer[0].cards[0].size == 3
