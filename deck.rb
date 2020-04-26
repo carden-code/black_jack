@@ -3,11 +3,19 @@ class Deck
   SUITS = %w[♠ ♥ ♣ ♦].freeze
   VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'].freeze
 
-  attr_reader :cards, :cards_rand
+  attr_reader :cards
 
   def initialize
     @cards = []
-    SUITS.map { |suit| VALUES.map { |value| @cards << Card.new(suit, value) } }
-    @cards_rand = @cards.sort_by { rand }
+    SUITS.each do |suit|
+      VALUES.each do |value|
+        @cards << Card.new(suit, value)
+      end
+    end
+    @cards.shuffle!
+  end
+
+  def deal_cards(number)
+    @cards.pop(number)
   end
 end
