@@ -15,6 +15,11 @@ class User
 
   # Метод cards_sum считает сумму очков первых двух карт.
   def cards_sum
-    @sum_cards = @cards[0][0][1] + @cards[0][1][1]
+    @sum_cards = @cards[0][0].value + @cards[0][1].value
+  end
+
+  def make_a_bet(bet)
+    @money -= 10
+    bet
   end
 end
