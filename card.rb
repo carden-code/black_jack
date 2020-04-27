@@ -11,10 +11,10 @@ class Card
   private
 
   def find_value(rank)
-    return 11 if rank == 'A'
-    return 10 if rank == 'J'
-    return 10 if rank == 'Q'
-    return 10 if rank == 'K'
-    return rank if rank.class == Integer
+    return 11 if rank.eql? 'A'
+    return 10 if rank.eql? 'J'
+    return 10 if rank.eql? 'Q'
+    return 10 if rank.eql? 'K'
+    return rank if rank.integer?
   end
 end
