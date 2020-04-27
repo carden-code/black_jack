@@ -14,143 +14,81 @@ class Game
     @dealer = Dealer.new
     @cards = Deck.new
     @bank = 0
-    new_round
   end
 
+  # Метод new_round создаёт новый раунд: обновляет колоду карт,
+  # удаляет старые карты игроков, делает ставку в банк, раздаёт по 2 карты игрокам,
+  # считает сумму очков карт.
   def new_round
-    @cards = Deck.new
-    @user.cards.clear
-    @dealer.cards.clear
-    @bank += user.make_a_bet(BET)
-    @bank += dealer.make_a_bet(BET)
-    @user.cards << @cards.deal_cards(2)
-    @dealer.cards << @cards.deal_cards(2)
-    @user.cards_sum
-    @dealer.cards_sum
+    return unless @bank.zero?
+
+    if @user.money >= BET && @dealer.money >= BET
+      @cards = Deck.new
+      @user.cards.clear
+      @dealer.cards.clear
+      @bank += user.make_a_bet(BET)
+      @bank += dealer.make_a_bet(BET)
+      @user.cards << @cards.deal_cards(2)
+      @dealer.cards << @cards.deal_cards(2)
+      @user.cards_sum
+      @dealer.cards_sum
+    elsif @user.money < BET
+      @user
+    elsif @dealer.money < BET
+      @dealer
+    end
   end
 
   # Метод add_card_user добавляет дополнительную карту пользователю.
   def add_card_user
-    return if @user.cards.flatten.size.eql? 3
+    return if @user.cards.flatten.size == 3 || @dealer.cards.flatten.size == 3
 
     @user.cards << @cards.deal_cards(1)
 
     @user.cards_sum
-    # open_cards if @user.sum_cards >= 21
+
+    pay_to_winner if @user.sum_cards >= 21
   end
 
+  # Метод add_card_dealer добавляет дополнительную карту диллеру.
   def add_card_dealer
-    return if @dealer.cards.flatten.size.eql? 3
+    return if @dealer.cards.flatten.size == 3
 
     @dealer.cards << @cards.deal_cards(1) if @dealer.sum_cards < 17 &&
-                                             @user.sum_cards <= 21
+                                             @user.sum_cards <= 21 &&
+                                             @dealer.sum_cards <= @user.sum_cards
     @dealer.cards_sum
-    # open_cards if @dealer.cards.flatten.size == 3 ||
-    #               @dealer.sum_cards >= 17 ||
-    #               @user.sum_cards > @dealer.sum_cards
+
+    pay_to_winner if @dealer.cards.flatten.size == 3 ||
+                     @dealer.sum_cards >= 17 ||
+                     @dealer.sum_cards >= 21 ||
+                     @dealer.sum_cards > @user.sum_cards
+  end
+
+  # Метод winner сравнивает очки и выявляет победителя.
+  def winner
+    add_card_dealer if @dealer.cards.flatten.size < 3
+    if @user.sum_cards > @dealer.sum_cards && @user.sum_cards <= 21
+      @user
+    elsif @dealer.sum_cards > 21
+      @user
+    elsif @user.sum_cards > 21
+      @dealer
+    elsif @user.sum_cards < @dealer.sum_cards && @dealer.sum_cards <= 21
+      @dealer
+    elsif @user.sum_cards == @dealer.sum_cards
+      nil
+    end
+  end
+
+  # Метод pay_to_winner зачисляет сумму банка победителю и обнуляет банк.
+  def pay_to_winner
+    if winner.nil?
+      @user.money += @bank / 2
+      @dealer.money += @bank / 2
+    else
+      winner.money += @bank
+    end
+    @bank = 0
   end
 end
-
-#   # Метод add_card_dealer добавляет дополнительную карту диллеру.
-#   def add_card_dealer
-#     return if @bank.zero?
-#
-#     return if @dealer[0].cards[0].size == 3
-#
-#     @dealer[0].cards[0] << @cards.pop if @dealer[0].sum_cards < 17 &&
-#                                          # @user[0].sum_cards > @dealer[0].sum_cards &&
-#                                          @user[0].sum_cards <= 21
-#
-#     if @dealer[0].cards[0].size == 3 && @dealer[0].cards[0].last.last == 11 && @dealer[0].sum_cards + 11 > 21
-#       @dealer[0].sum_cards += 1
-#     elsif @dealer[0].cards[0].size > 2
-#       @dealer[0].sum_cards += @dealer[0].cards[0].last.last
-#     end
-#
-#
-#   end
-# #   # Метод new_game добавляет поользователя и диллера в игру, раздаёт им карты
-# #   # и считает суммы очков.
-# #   def new_game
-# #     return unless @bank.zero?
-# #
-# #     if @user.size.zero?
-# #       message = ['Введите ваше имя:']
-# #       name = data_input(message).first
-# #       @user << User.new(name)
-# #       @dealer << Dealer.new
-# #     else
-# #       @user[0].cards.clear && @user[0].sum_cards = 0
-# #       @dealer[0].cards.clear && @dealer[0].sum_cards = 0
-# #     end
-# #
-# #     if @user[0].money.positive? && @dealer[0].money.positive?
-# #       deal_cards
-# #       make_a_bet
-# #     elsif @user[0].money.zero?
-# #       mesage_no_money
-# #     elsif @dealer[0].money.zero?
-# #       message_win
-# #     end
-# #     @cards = Deck.new.cards.sort_by { rand }
-# #   end
-# #
-# #   # Метод open_cards производит подсчёт очков и выявляет победителя.
-# #   def open_cards
-# #     add_card_dealer if @dealer[0].cards.size < 3 && @dealer[0].sum_cards < 17
-# #
-# #     if @user[0].sum_cards > @dealer[0].sum_cards && @user[0].sum_cards <= 21
-# #       @user[0].money += @bank
-# #       @bank = 0
-# #       message_user_win
-# #       message_new_round
-# #     elsif @user[0].sum_cards > 21
-# #       @dealer[0].money += @bank
-# #       @bank = 0
-# #       message_dealer_win
-# #       message_new_round
-# #     elsif @dealer[0].sum_cards > 21
-# #       @user[0].money += @bank
-# #       @bank = 0
-# #       message_user_win
-# #       message_new_round
-# #     elsif @user[0].sum_cards == @dealer[0].sum_cards
-# #       @user[0].money += @bank / 2
-# #       @dealer[0].money += @bank / 2
-# #       @bank = 0
-# #       message_draw
-# #       message_new_round
-# #     elsif @user[0].sum_cards < @dealer[0].sum_cards && @dealer[0].sum_cards <= 21
-# #       @dealer[0].money += @bank
-# #       @bank = 0
-# #       message_dealer_win
-# #       message_new_round
-# #     end
-# #   end
-# #
-# #   # Метод message_new_round выводит сообщение.
-# #   def message_new_round
-# #     puts "Если хотите продолжить нажмите: '1', если нет нажмите: '0'\n\n"
-# #   end
-# #
-# #   # Метод message_dealer_win выводит сообщение.
-# #   def message_dealer_win
-# #     puts "Диллер победил.\n\n"
-# #     puts "Сумма очков Диллера: #{@dealer[0].sum_cards}\n\n"
-# #     puts "Сумма очков #{@user[0].name}: #{@user[0].sum_cards}\n\n"
-# #   end
-# #
-# #   # Метод message_user_win выводит сообщение.
-# #   def message_user_win
-# #     puts "Игрок #{@user[0].name} - Победил!\n\n"
-# #     puts "Сумма очков #{@user[0].name}: #{@user[0].sum_cards}\n\n"
-# #     puts "Сумма очков Диллера: #{@dealer[0].sum_cards}\n\n"
-# #   end
-# #
-# #   # Метод message_draw выводит сообщение.
-# #   def message_draw
-# #     puts "Ничья!\n\n"
-# #     puts "Сумма очков #{@user[0].name}: #{@user[0].sum_cards}\n\n"
-# #     puts "Сумма очков Диллера: #{@dealer[0].sum_cards}\n\n"
-# #   end
-# # end
