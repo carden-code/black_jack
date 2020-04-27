@@ -2,6 +2,9 @@ Metrics/LineLength:
   Max: 90
 
 Metrics/AbcSize:
+  Max: 55
+
+Metrics/MethodLength:
   Max: 30
 
 Metrics/PerceivedComplexity:
