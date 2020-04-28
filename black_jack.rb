@@ -7,7 +7,7 @@ require_relative 'terminal_interface'
 #
 class BlackJack
   def initialize
-    user = User.new('Slava')
+    user = User.new
     game = Game.new(user)
     TerminalInterface.new(game)
   end
