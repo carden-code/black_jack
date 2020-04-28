@@ -1,11 +1,17 @@
+Metrics/ClassLength:
+  Max: 150
+
 Metrics/LineLength:
   Max: 90
 
 Metrics/AbcSize:
-  Max: 55
+  Max: 100
 
 Metrics/MethodLength:
-  Max: 30
+  Max: 40
+
+Metrics/BlockLength:
+  Max: 35
 
 Metrics/PerceivedComplexity:
   Max: 10
