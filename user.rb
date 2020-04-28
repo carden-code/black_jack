@@ -13,15 +13,12 @@ class User
     @sum_cards = 0
   end
 
-  # Метод cards_sum считает сумму очков первых двух карт.
+  # Метод cards_sum считает сумму карт.
   def cards_sum
-    if @cards.flatten.size == 3
-      @sum_cards += @cards.flatten[2].value
-      @sum_cards += 1 if @cards.flatten[2].value == 11 && @sum_cards + 11 == 22
-    else
-      @sum_cards = @cards.flatten[0].value + @cards.flatten[1].value
-      @sum_cards = 12 if @cards[0][0].value + @cards[0][1].value == 22
-    end
+    @sum_cards = @cards.flatten.sum(&:value)
+    arr = []
+    @cards.flatten.each { |card| arr << card.rank if card.rank == 'A' }
+    @sum_cards -= 10 if arr.include?('A') && @sum_cards > 21
   end
 
   # Метод make_a_bet делает ставку в банк,
