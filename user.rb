@@ -3,8 +3,8 @@
 # Колличество денег
 # Карты и сумму очков
 class User
-  attr_accessor :money, :sum_cards
-  attr_reader :name, :cards
+  attr_accessor :money, :sum_cards, :name
+  attr_reader :cards
 
   def initialize(name)
     @name = name
@@ -24,7 +24,8 @@ class User
   # Метод make_a_bet делает ставку в банк,
   # вычитывая значение BET из @money.
   def make_a_bet(bet)
-    @money -= 10
+    return if @money < bet
+    @money -= bet
     bet
   end
 end
