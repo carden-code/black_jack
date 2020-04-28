@@ -1,15 +1,12 @@
 #
 class Deck
-  SUITS = %w[♠ ♥ ♣ ♦].freeze
-  VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'].freeze
-
   attr_reader :cards
 
   def initialize
     @cards = []
-    SUITS.each do |suit|
-      VALUES.each do |value|
-        @cards << Card.new(suit, value)
+    Card::SUITS.each do |suit|
+      Card::VALUES.each do |rank|
+        @cards << Card.new(suit, rank)
       end
     end
     @cards.shuffle!
