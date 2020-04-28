@@ -6,7 +6,7 @@ class User
   attr_accessor :money, :sum_cards, :name
   attr_reader :cards
 
-  def initialize(name)
+  def initialize(name = 'User')
     @name = name
     @money = 100
     @cards = []
