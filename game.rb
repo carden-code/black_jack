@@ -21,22 +21,17 @@ class Game
   # считает сумму очков карт.
   def new_round
     return unless @bank.zero?
+    return if @user.money < BET || @dealer.money < BET
 
-    if @user.money >= BET && @dealer.money >= BET
-      @cards = Deck.new
-      @user.cards.clear
-      @dealer.cards.clear
-      @bank += user.make_a_bet(BET)
-      @bank += dealer.make_a_bet(BET)
-      @user.cards << @cards.deal_cards(2)
-      @dealer.cards << @cards.deal_cards(2)
-      @user.cards_sum
-      @dealer.cards_sum
-    elsif @user.money < BET
-      @user
-    elsif @dealer.money < BET
-      @dealer
-    end
+    @cards = Deck.new
+    @user.cards.clear
+    @dealer.cards.clear
+    @bank += user.make_a_bet(BET)
+    @bank += dealer.make_a_bet(BET)
+    @user.cards << @cards.deal_cards(2)
+    @dealer.cards << @cards.deal_cards(2)
+    @user.cards_sum
+    @dealer.cards_sum
   end
 
   # Метод add_card_user добавляет дополнительную карту пользователю.
@@ -44,30 +39,19 @@ class Game
     return if @user.cards.flatten.size == 3 || @dealer.cards.flatten.size == 3
 
     @user.cards << @cards.deal_cards(1)
-
     @user.cards_sum
-
-    pay_to_winner if @user.sum_cards >= 21
   end
 
   # Метод add_card_dealer добавляет дополнительную карту диллеру.
   def add_card_dealer
     return if @dealer.cards.flatten.size == 3
 
-    @dealer.cards << @cards.deal_cards(1) if @dealer.sum_cards < 17 &&
-                                             @user.sum_cards <= 21 &&
-                                             @dealer.sum_cards <= @user.sum_cards
+    @dealer.cards << @cards.deal_cards(1) if @dealer.sum_cards < 17
     @dealer.cards_sum
-
-    pay_to_winner if @dealer.cards.flatten.size == 3 ||
-                     @dealer.sum_cards >= 17 ||
-                     @dealer.sum_cards >= 21 ||
-                     @dealer.sum_cards > @user.sum_cards
   end
 
   # Метод winner сравнивает очки и выявляет победителя.
   def winner
-    add_card_dealer if @dealer.cards.flatten.size < 3
     if @user.sum_cards > @dealer.sum_cards && @user.sum_cards <= 21
       @user
     elsif @dealer.sum_cards > 21
