@@ -1,5 +1,8 @@
 #
 class Card
+  SUITS = %w[♠ ♥ ♣ ♦].freeze
+  VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'].freeze
+
   attr_reader :suit, :rank, :value
 
   def initialize(suit, rank)
@@ -11,10 +14,12 @@ class Card
   private
 
   def find_value(rank)
-    return 11 if rank.eql? 'A'
-    return 10 if rank.eql? 'J'
-    return 10 if rank.eql? 'Q'
-    return 10 if rank.eql? 'K'
-    return rank if rank.integer?
+    if rank == 'A'
+      11
+    elsif %w[J Q K].include? rank
+      10
+    else
+      rank
+    end
   end
 end
