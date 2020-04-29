@@ -4,7 +4,7 @@ require_relative 'game'
 require_relative 'card'
 require_relative 'deck'
 require_relative 'terminal_interface'
-#
+# Класс BlackJack запускает игру.
 class BlackJack
   def initialize
     user = User.new
