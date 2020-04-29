@@ -7,12 +7,12 @@
 class Game
   BET = 10
 
-  attr_reader :user, :dealer, :bank, :cards
+  attr_reader :user, :dealer, :bank, :deck
 
   def initialize(user)
     @user = user
     @dealer = Dealer.new
-    @cards = Deck.new
+    @deck = Deck.new
     @bank = 0
   end
 
@@ -23,30 +23,16 @@ class Game
     return unless @bank.zero?
     return if @user.money < BET || @dealer.money < BET
 
-    @cards = Deck.new
+    @deck = Deck.new
     @user.cards.clear
     @dealer.cards.clear
     @bank += user.make_a_bet(BET)
     @bank += dealer.make_a_bet(BET)
-    @user.cards << @cards.deal_cards(2)
-    @dealer.cards << @cards.deal_cards(2)
+    @user.cards << @deck.deal_cards
+    @user.cards << @deck.deal_cards
+    @dealer.cards << @deck.deal_cards
+    @dealer.cards << @deck.deal_cards
     @user.cards_sum
-    @dealer.cards_sum
-  end
-
-  # Метод add_card_user добавляет дополнительную карту пользователю.
-  def add_card_user
-    return if @user.cards.flatten.size == 3 || @dealer.cards.flatten.size == 3
-
-    @user.cards << @cards.deal_cards(1)
-    @user.cards_sum
-  end
-
-  # Метод add_card_dealer добавляет дополнительную карту диллеру.
-  def add_card_dealer
-    return if @dealer.cards.flatten.size == 3
-
-    @dealer.cards << @cards.deal_cards(1) if @dealer.sum_cards < 17
     @dealer.cards_sum
   end
 
