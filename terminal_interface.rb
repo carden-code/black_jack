@@ -8,15 +8,17 @@ class TerminalInterface
   def initialize(game)
     @game = game
     start
-    start_game
   end
 
+  # Метод start запрашивает имя пользователя и запускает метод start_game.
   def start
     puts 'Введите Ваше имя:'
     name = gets.chomp
     game.user.name = name
+    start_game
   end
 
+  # Метод start_game запускает цикл с отображением информации об игре.
   def start_game
     game.new_round
     puts NEWLINE
@@ -63,6 +65,17 @@ class TerminalInterface
     end
   end
 
+  # Метод start_menu стартовое меню выводится при запуске.
+  def start_menu
+    messages = ['Выберите действие, введя номер из списка: ',
+                BORDERLINE,
+                ' 1 - Пропустить.',
+                ' 2 - Добавить карту.',
+                ' 3 - Открыть карты.',
+                BORDERLINE]
+    messages.each { |item| puts item }
+  end
+
   # Метод selected принимает параметр из пользовательского ввода
   # и исполняет соответствующий метод.
   def selected(start_menu)
@@ -80,27 +93,7 @@ class TerminalInterface
     messages
   end
 
-  def messages
-    message_user_win if game.bank.zero?
-    message_new_round if game.bank.zero?
-    message_no_money if game.user.money.zero?
-    message_win if game.dealer.money.zero?
-  end
-
-  def start_menu
-    messages = ['Выберите действие, введя номер из списка: ',
-                BORDERLINE,
-                ' 1 - Пропустить.',
-                ' 2 - Добавить карту.',
-                ' 3 - Открыть карты.',
-                BORDERLINE]
-    messages.each { |item| puts item }
-  end
-
-  def selected_2(menu)
-    game.new_round if menu == '1'
-  end
-
+  # Метод menu_2 выводит меню.
   def menu_2
     messages = ['Выберите действие, введя номер из списка: ',
                 BORDERLINE,
@@ -110,10 +103,13 @@ class TerminalInterface
     messages.each { |item| puts item }
   end
 
-  def selected_3(menu)
-    BlackJack.new if menu == '1'
+  # Метод selected_2 принимает параметр из пользовательского ввода
+  # и исполняет соответствующий метод.
+  def selected_2(menu)
+    game.new_round if menu == '1'
   end
 
+  # Метод menu_3 выводит меню.
   def menu_3
     messages = ['Выберите действие, введя номер из списка: ',
                 BORDERLINE,
@@ -121,6 +117,20 @@ class TerminalInterface
                 ' 0 - Выйти из игры.',
                 BORDERLINE]
     messages.each { |item| puts item }
+  end
+
+  # Метод selected_3 принимает параметр из пользовательского ввода
+  # и исполняет соответствующий метод.
+  def selected_3(menu)
+    BlackJack.new if menu == '1'
+  end
+
+  # Метод messages выводит сообщения если условия true.
+  def messages
+    message_user_win if game.bank.zero?
+    message_new_round if game.bank.zero?
+    message_no_money if game.user.money.zero?
+    message_win if game.dealer.money.zero?
   end
 
   # Метод message_no_money выводит сообщение.
