@@ -31,6 +31,7 @@ class User
   # вычитывая значение BET из @money.
   def make_a_bet(bet)
     return if @money < bet
+
     @money -= bet
     bet
   end
