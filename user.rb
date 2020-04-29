@@ -13,12 +13,18 @@ class User
     @sum_cards = 0
   end
 
+  # Метод add_card_user добавляет дополнительную карту пользователю.
+  def take_card(deck)
+    return if @cards.size == 3
+
+    @cards << deck.deal_cards
+    cards_sum
+  end
+
   # Метод cards_sum считает сумму карт.
   def cards_sum
-    @sum_cards = @cards.flatten.sum(&:value)
-    arr = []
-    @cards.flatten.each { |card| arr << card.rank if card.rank == 'A' }
-    @sum_cards -= 10 if arr.include?('A') && @sum_cards > 21
+    @sum_cards = @cards.sum(&:value)
+    @sum_cards -= 10 if @cards.any?(&:ace?) && @sum_cards > 21
   end
 
   # Метод make_a_bet делает ставку в банк,
