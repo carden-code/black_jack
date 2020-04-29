@@ -11,10 +11,14 @@ class Card
     @value = find_value(rank)
   end
 
+  def ace?
+    @rank == 'A'
+  end
+
   private
 
   def find_value(rank)
-    if rank == 'A'
+    if ace?
       11
     elsif %w[J Q K].include? rank
       10
