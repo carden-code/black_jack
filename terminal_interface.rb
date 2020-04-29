@@ -40,7 +40,7 @@ class TerminalInterface
       puts BORDERLINE
 
       if game.bank != 0
-        puts "Карты Диллера: [[**][**]]\n\n"
+        puts "Карты Диллера: ***\n\n"
         puts "Сумма очков: **\n\n"
       else
         puts 'Карты Диллера:'
