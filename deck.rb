@@ -5,6 +5,7 @@
 class Deck
   attr_reader :cards
 
+  # Создаются карты и добавляются в @cards образуя колоду из 52 карт.
   def initialize
     @cards = []
     Card::SUITS.each do |suit|
@@ -12,6 +13,7 @@ class Deck
         @cards << Card.new(suit, rank)
       end
     end
+    # Перемешивает карты.
     @cards.shuffle!
   end
 
