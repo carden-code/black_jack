@@ -67,7 +67,6 @@ class TerminalInterface
     end
   end
 
-
   # Метод selected принимает параметр из пользовательского ввода
   # и исполняет соответствующий метод.
   def selected(start_menu)
