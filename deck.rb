@@ -15,9 +15,9 @@ class Deck
     @cards.shuffle!
   end
 
-  # Метод deal_cards(раздать карты) принимает параметр в виде колличества карт,
-  # и удаляет их из колоды. Возвращает массив с удалёнными картами.
-  def deal_cards(number)
-    @cards.pop(number)
+  # Метод deal_cards(раздать карты) удаляет карту из колоды.
+  # Возвращает удалённую карту.
+  def deal_cards
+    @cards.delete(@cards.last)
   end
 end
