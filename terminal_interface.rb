@@ -31,7 +31,7 @@ class TerminalInterface
 
       puts BORDERLINE
       puts "Ваши деньги: #{game.user.money}\n\n"
-      puts 'Ваши карты:'
+      print 'Ваши карты:  '
       game.user.cards.each { |elem| print "#{elem.rank}#{elem.suit}  " }
       puts NEWLINE
       puts "Сумма очков: #{game.user.sum_cards}"
@@ -41,7 +41,7 @@ class TerminalInterface
         puts "Карты Диллера: ***\n\n"
         puts "Сумма очков: **\n\n"
       else
-        puts 'Карты Диллера:'
+        print 'Карты Диллера: '
         game.dealer.cards.each { |elem| print "#{elem.rank}#{elem.suit}  " }
         puts NEWLINE
         puts "Сумма очков: #{game.dealer.sum_cards}"
