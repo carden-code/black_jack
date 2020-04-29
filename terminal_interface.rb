@@ -1,9 +1,5 @@
 # Интерфейс терминала.
 class TerminalInterface
-  # HASH содержит методы.
-  HASH = { '1' => :add_card_dealer, '2' => :add_card_user,
-           '3' => :pay_to_winner }.freeze
-
   BORDERLINE = '-' * 50
   NEWLINE = "\n" * 2
 
@@ -34,7 +30,7 @@ class TerminalInterface
       puts BORDERLINE
       puts "Ваши деньги: #{game.user.money}\n\n"
       puts 'Ваши карты:'
-      game.user.cards.flatten.each { |elem| print "#{elem.rank}#{elem.suit}  " }
+      game.user.cards.each { |elem| print "#{elem.rank}#{elem.suit}  " }
       puts NEWLINE
       puts "Сумма очков: #{game.user.sum_cards}"
       puts BORDERLINE
@@ -44,7 +40,7 @@ class TerminalInterface
         puts "Сумма очков: **\n\n"
       else
         puts 'Карты Диллера:'
-        game.dealer.cards.flatten.each { |elem| print "#{elem.rank}#{elem.suit}  " }
+        game.dealer.cards.each { |elem| print "#{elem.rank}#{elem.suit}  " }
         puts NEWLINE
         puts "Сумма очков: #{game.dealer.sum_cards}"
       end
@@ -58,7 +54,7 @@ class TerminalInterface
         menu_3
         menu = gets.chomp
         selected_3(menu)
-      elsif game.cards.cards.size < 52
+      elsif game.deck.cards.size < 52
         menu_2
         menu = gets.chomp
         selected_2(menu)
@@ -70,20 +66,18 @@ class TerminalInterface
   # Метод selected принимает параметр из пользовательского ввода
   # и исполняет соответствующий метод.
   def selected(start_menu)
-    game.send HASH[start_menu]
-
-    game.send HASH['3'] if game.user.sum_cards > 21
-
-    game.send HASH['3'] if game.dealer.cards.flatten.size == 3 ||
-                           game.dealer.sum_cards >= 17 ||
-                           game.dealer.sum_cards >= 21
-
-    game.send HASH['1'] if start_menu == '3' &&
-                           game.dealer.cards.flatten.size < 3 &&
-                           game.dealer.sum_cards < 17
+    if start_menu == '1'
+      game.dealer.take_card(game.deck)
+      game.pay_to_winner
+    elsif start_menu == '2'
+      game.user.take_card(game.deck)
+      game.pay_to_winner if game.user.sum_cards > 21
+      game.dealer.take_card(game.deck) if game.bank > 0
+      game.pay_to_winner
+    elsif start_menu == '3'
+      game.pay_to_winner
+    end
     messages
-  rescue TypeError
-    message_re_enter
   end
 
   def messages
@@ -91,10 +85,6 @@ class TerminalInterface
     message_new_round if game.bank.zero?
     message_no_money if game.user.money.zero?
     message_win if game.dealer.money.zero?
-  end
-
-  def selected_2(menu)
-    game.new_round if menu == '1'
   end
 
   def start_menu
@@ -105,6 +95,10 @@ class TerminalInterface
                 ' 3 - Открыть карты.',
                 BORDERLINE]
     messages.each { |item| puts item }
+  end
+
+  def selected_2(menu)
+    game.new_round if menu == '1'
   end
 
   def menu_2
@@ -127,11 +121,6 @@ class TerminalInterface
                 ' 0 - Выйти из игры.',
                 BORDERLINE]
     messages.each { |item| puts item }
-  end
-
-  # Метод message_re_enter выводит сообщение.
-  def message_re_enter
-    puts "Повторите ввод.\n\n"
   end
 
   # Метод message_no_money выводит сообщение.
