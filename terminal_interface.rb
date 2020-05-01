@@ -50,8 +50,8 @@ class TerminalInterface
 
       if game.bank != 0
         start_menu
-        start_menu = gets.chomp
-        selected(start_menu)
+        input_menu = gets.chomp
+        selected(input_menu)
       elsif game.user.money.zero? || game.dealer.money.zero?
         menu_3
         menu = gets.chomp
@@ -78,16 +78,19 @@ class TerminalInterface
 
   # Метод selected принимает параметр из пользовательского ввода
   # и исполняет соответствующий метод.
-  def selected(start_menu)
-    if start_menu == '1'
-      game.dealer.take_card(game.deck)
+  def selected(input_menu)
+    if input_menu == '1'
+      loop do
+        game.dealer.take_card(game.deck)
+        break if game.dealer.sum_cards >= 17
+      end
       game.pay_to_winner
-    elsif start_menu == '2'
+    elsif input_menu == '2'
       game.user.take_card(game.deck)
       game.pay_to_winner if game.user.sum_cards > 21
-      game.dealer.take_card(game.deck) if game.bank > 0
-      game.pay_to_winner
-    elsif start_menu == '3'
+      #game.dealer.take_card(game.deck) if game.bank > 0
+      #game.pay_to_winner
+    elsif input_menu == '3'
       game.pay_to_winner
     end
     messages
