@@ -15,7 +15,7 @@ class User
 
   # Метод add_card_user добавляет дополнительную карту пользователю.
   def take_card(deck)
-    return if @cards.size == 3
+    #return if @cards.size == 3
 
     @cards << deck.deal_cards
     cards_sum
